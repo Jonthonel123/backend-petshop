@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Categoria {
+  id               Int     @id @default(autoincrement())
+  codigo_categoria String  @db.VarChar(100)
+  nombre_categoria String  @db.VarChar(100)
+  fecha_creacion   String
+  estado_categoria Boolean @default(true)
+
+  productos Producto[]
+
+  // es modificar alguna configuracion de la tabla
+  @@map("categorias")
+}
+
+model Producto {
+  id                   Int     @id @default(autoincrement())
+  codigo_producto      String  @db.VarChar(10)
+  nombre_producto      String  @db.VarChar(100)
+  descripcion_producto String  @db.VarChar(800)
+  // ->? significa si puede o no tener valor
+  precio_producto      Float?
+  stock_producto       Int
+  imagen               String  @db.VarChar(500)
+  fecha_creacion       String
+  tieneIgv             Boolean @map("tiene_igv")
+  sku                  String  @unique
+  estado               Boolean @default(true)
+
+  categoriaId Int @map("categoria_id")
+  grupoId     Int @map("grupo_id")
+  marcaId     Int @map("marca_id")
+
+  categoria Categoria @relation(fields: [categoriaId], references: [id])
+  grupo     Grupo     @relation(fields: [grupoId], references: [id])
+  marca     Marca     @relation(fields: [marcaId], references: [id])
+
+  @@map("productos")
+}
+
+model Grupo {
+  id             Int     @id @default(autoincrement())
+  codigo_grupo   String  @db.VarChar(10)
+  nombre         String  @db.VarChar(100)
+  fecha_creacion String
+  estado         Boolean @default(true)
+
+  productos Producto[]
+
+  @@map("grupos")
+}
+
+model Marca {
+  id             Int     @id @default(autoincrement())
+  codigo_grupo   String  @db.VarChar(10)
+  nombre         String  @db.VarChar(100)
+  fecha_creacion String
+  estado         Boolean @default(true)
+
+  productos Producto[]
+
+  @@map("marca")
+}
+
+model Usuario {
+  id               Int     @id @default(autoincrement())
+  apellido_paterno String
+  apellido_materno String
+  nombres          String
+  tipo_documento   String  @db.VarChar(10)
+  nro_documento    String  @db.VarChar(20)
+  telefono         String
+  celular          String
+  fecha_creacion   String
+  estado           Boolean @default(true)
+  email            String
+  password         String
+
+  perfilId Int    @map("perfil_id")
+  perfil   Perfil @relation(fields: [perfilId], references: [id])
+
+  @@map("usuarios")
+}
+
+model Perfil {
+  id             Int     @id @default(autoincrement())
+  codigo_perfil  String  @db.VarChar(10)
+  nombre         String  @db.VarChar(100)
+  fecha_creacion String
+  estado         Boolean @default(true)
+
+  usuario Usuario[]
+
+  @@map("perfil")
+}
