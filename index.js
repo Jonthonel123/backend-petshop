@@ -12,9 +12,11 @@ import { marcaRouter } from "./routes/marca.routes.js";
 import { usuarioRouter } from "./routes/usuarios.routes.js";
 import { perfilRouter } from "./routes/perfil.routes.js";
 import { calendarioRouter } from "./routes/calendarios.routes.js";
+import cors from "cors";
 
 const servidor = express();
 
+servidor.use(cors());
 // convierte la inf. a  JSON
 //midedleware para convertir la inf. entrante a un formato legible
 servidor.use(express.json());
